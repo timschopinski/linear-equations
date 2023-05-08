@@ -9,7 +9,7 @@ def last_digit(num):
 
 class LinearSystem:
 
-    def __init__(self, a1: int, a2: int, a3: int, index: int = 188749):
+    def __init__(self, a1: int, a2: int, a3: int, index: int = 188749, n=None):
         self.a1 = a1
         self.a2 = a2
         self.a3 = a3
@@ -17,7 +17,10 @@ class LinearSystem:
         self.c = last_digit(index//10)
         self.e = last_digit(index//100)
         self.f = last_digit(index//1000)
-        self.N = int(f"9{self.c}{self.d}")
+        if n:
+            self.N = n
+        else:
+            self.N = int(f"9{self.c}{self.d}")
         self.A = self.create_matrix()
         self.b = self.create_vector()
 

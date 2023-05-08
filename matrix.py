@@ -88,6 +88,9 @@ class Matrix:
     def diagonal_to_square_matrix(vector):
         return Matrix([[vector[i] if i == j else 0 for j in range(len(vector))] for i in range(len(vector))])
 
+    @staticmethod
+    def identity(size):
+        return Matrix([[1 if i == j else 0 for j in range(size)] for i in range(size)])
 
 if __name__ == "__main__":
     m1 = Matrix([[1, 2], [3, 4]])

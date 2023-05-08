@@ -1,6 +1,5 @@
 from linear_system import LinearSystem
-from jacobi import jacobi_method
-from gauss_seidl import gauss_seidel_method
+from iterative_methods import Jacobi, GaussSeidel
 
 
 if __name__ == "__main__":
@@ -8,13 +7,15 @@ if __name__ == "__main__":
     y = z = -1
     system = LinearSystem(x, y, z)
     print("=" * 40)
-    iterations, elapsed_time = jacobi_method(system.A, system.b)
+    jacobi_method = Jacobi(system.A, system.b)
+    jacobi_method.solve()
     print("Jacobi's method")
-    print("Time:", elapsed_time)
-    print("Iterations:", iterations)
-    iterations, elapsed_time = gauss_seidel_method(system.A, system.b)
+    print(f"Time: {jacobi_method.elapsed_time}s")
+    print("Iterations: ", jacobi_method.number_of_iterations)
+    gauss_seidel_method = GaussSeidel(system.A, system.b)
+    gauss_seidel_method.solve()
     print("=" * 40)
     print("Gauss-Seidel's method")
-    print("Time:", elapsed_time)
-    print("Iterations:", iterations)
+    print(f"Time: {gauss_seidel_method.elapsed_time}s")
+    print("Iterations: ", gauss_seidel_method.number_of_iterations)
     print("=" * 40)

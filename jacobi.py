@@ -4,28 +4,35 @@ from linear_system import *
 import time
 
 
-def jacobi_method(
-        a: Matrix, b: Vector, tolerance: int = 1e-9, max_iterations: int = 10
-) -> tuple[int, float]:
-    start_time = time.time()
-    n = len(a)
-    x = b.zeros(n)
-    tmp_vector = b.zeros(n)
+class Jacobi:
+    def __init__(self, a: Matrix, b: Vector, tolerance: int = 1e-9, max_iterations: int = 10):
+        self.a = a
+        self.b = b
+        self.tolerance = tolerance
+        self.max_iterations = max_iterations
+        self.elapsed_time = None
+        self.number_of_iterations = 0
 
-    for iterations in range(max_iterations):
-        for i in range(n):
-            value = b[i]
-            for j in range(n):
-                if i != j:
-                    value -= a[i][j] * x[j]
-            tmp_vector[i] = value / a[i][i]
-        x = copy(tmp_vector)
-        res = a * x - b
+    def solve(self) -> None:
+        start_time = time.time()
+        n = len(self.a)
+        x = self.b.zeros(n)
+        tmp_vector = self.b.zeros(n)
 
-        if res.norm() < tolerance:
-            break
-        iterations += 1
-    else:
-        raise ValueError(f"Jacobi failed to converge after {max_iterations} iterations")
-    elapsed_time = time.time() - start_time
-    return iterations + 1, elapsed_time
+        for iterations in range(self.max_iterations):
+            for i in range(n):
+                value = self.b[i]
+                for j in range(n):
+                    if i != j:
+                        value -= self.a[i][j] * x[j]
+                tmp_vector[i] = value / self.a[i][i]
+            x = copy(tmp_vector)
+            res = self.a * x - self.b
+
+            if res.norm() < self.tolerance:
+                break
+            iterations += 1
+        else:
+            raise ValueError(f"Jacobi failed to converge after {self.max_iterations} iterations")
+        self.elapsed_time = time.time() - start_time
+        self.number_of_iterations = iterations + 1
