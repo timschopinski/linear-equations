@@ -5,7 +5,7 @@ import time
 
 
 def jacobi_method(
-        a: Matrix, b: Vector, tolerance: int = 1e-9, max_iterations: int = 1000
+        a: Matrix, b: Vector, tolerance: int = 1e-9, max_iterations: int = 10
 ) -> tuple[int, float]:
     start_time = time.time()
     n = len(a)

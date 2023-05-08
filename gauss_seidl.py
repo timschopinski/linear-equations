@@ -3,7 +3,7 @@ from matrix import Matrix
 from vector import Vector
 
 
-def gauss_seidel_method(a: Matrix, b: Vector, tolerance: int = 1e-9, max_iterations: int = 1000) -> tuple[int, float]:
+def gauss_seidel_method(a: Matrix, b: Vector, tolerance: int = 1e-9, max_iterations: int = 10) -> tuple[int, float]:
     start_time = time.time()
     n = len(a)
     x = b.zeros(n)
