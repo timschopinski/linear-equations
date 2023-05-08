@@ -1,129 +1,99 @@
-import math
 from typing import List
-
-
-def last_digit(num):
-    return int(num - (10 * int(num / 10)))
-
-
-def copy_matrix(matrix):
-    return [[elem for elem in row] for row in matrix]
-
-
-def matrix_sub_matrix(a, b):
-    return [[a[i][j] - b[i][j] for j in range(len(a[0]))] for i in range(len(a))]
-
-
-def matrix_add_matrix(a, b):
-    return [[a[i][j] + b[i][j] for j in range(len(a[0]))] for i in range(len(a))]
-
-
-def matrix_zeros(x, y):
-    return [[0 for _ in range(x)] for _ in range(y)]
-
-
-def diagonal_to_square_matrix(vector):
-    return [[vector[i] if i == j else 0 for j in range(len(vector))] for i in range(len(vector))]
-
-
-def vector_zeros(length: int) -> List[float]:
-    return [0.0 for _ in range(length)]
-
-
-def vector_ones(length: int) -> List[float]:
-    return [1.0 for _ in range(length)]
-
-
-def diagonal(a: List[List[float]]) -> List[float]:
-    return [a[i][i] for i in range(len(a))]
-
-
-def copy_vector(vector: List[float]) -> List[float]:
-    return [elem for elem in vector]
-
-
-def vector_sub_vector(a: List[float], b: List[float]) -> List[float]:
-    tmp = copy_vector(a)
-    for i in range(len(tmp)):
-        tmp[i] -= b[i]
-    return tmp
-
-
-def vector_add_vector(a: List[float], b: List[float]) -> List[float]:
-    tmp = copy_vector(a)
-    for i in range(len(tmp)):
-        tmp[i] += b[i]
-    return tmp
-
-
-def norm(vector: List[float]) -> float:
-    counter = 0.0
-    for elem in vector:
-        counter += elem ** 2
-    return counter ** 0.5
-
-
-def matrix_vector_multiply(a: List[List[float]], b: List[float]) -> List[float]:
-    copy_a = copy_matrix(a)
-    copy_b = copy_vector(b)
-    m = len(copy_a)
-    n = len(copy_a[0])
-    c = vector_zeros(m)
-
-    for i in range(m):
-        for l in range(n):
-            c[i] += copy_a[i][l] * copy_b[l]
-    return c
+from vector import Vector
 
 
 class Matrix:
 
-    def __init__(self, a1: int, a2: int, a3: int, index: int = 188749):
-        self.a1 = a1
-        self.a2 = a2
-        self.a3 = a3
-        self.d = last_digit(index)
-        self.c = last_digit(index//10)
-        self.e = last_digit(index//100)
-        self.f = last_digit(index//1000)
-        self.N = int(f"9{self.c}{self.d}")
-        self.A = self.create_matrix()
-        self.b = self.create_vector()
+    def __init__(self, matrix: List[List[float]]):
+        self.matrix = matrix
 
-    def create_matrix(self) -> List[List[float]]:
-        A = [[0] * self.N for _ in range(self.N)]
-        for i in range(self.N):
-            A[i][i] = self.a1
-            if i > 0:
-                A[i][i - 1] = self.a2
-            if i < self.N - 1:
-                A[i][i + 1] = self.a2
-            if i > 1:
-                A[i][i - 2] = self.a3
-            if i < self.N - 2:
-                A[i][i + 2] = self.a3
+    def __add__(self, other):
+        if isinstance(other, Matrix):
+            if self.shape() != other.shape():
+                raise ValueError("Matrices must have the same shape to be added.")
+            return Matrix([[self.matrix[i][j] + other.matrix[i][j] for j in range(len(self.matrix[0]))] for i in range(len(other.matrix))])
+        else:
+            raise TypeError("Cannot add a non-matrix object to a matrix.")
 
-        return A
+    def __sub__(self, other):
+        if isinstance(other, Matrix):
+            if self.shape() != other.shape():
+                raise ValueError("Matrices must have the same shape to be subtracted.")
+            return Matrix([[self.matrix[i][j] - other.matrix[i][j] for j in range(len(self.matrix[0]))] for i in range(len(self.matrix))])
+        else:
+            raise TypeError("Cannot subtract a non-matrix object from a matrix.")
 
-    def create_vector(self) -> List[float]:
-        b = [math.sin(n * (self.f + 1)) for n in range(1, self.N + 1)]
-        return b
+    def __mul__(self, other):
+        if isinstance(other, Matrix):
+            if self.shape()[1] != other.shape()[0]:
+                raise ValueError("Number of columns in left matrix must equal number of rows in right matrix.")
+            result = self.zeros(self.shape()[0], other.shape()[1])
+            for i in range(self.shape()[0]):
+                for j in range(other.shape()[1]):
+                    for k in range(self.shape()[1]):
+                        result.matrix[i][j] += self.matrix[i][k] * other.matrix[k][j]
+            return result
+        elif isinstance(other, Vector):
+            if self.shape()[1] != len(other):
+                raise ValueError("Number of columns in matrix must equal length of vector.")
+            result = other.zeros(self.shape()[0])
+            for i in range(self.shape()[0]):
+                for j in range(self.shape()[1]):
+                    result[i] += self.matrix[i][j] * other[j]
+            return result
+        elif isinstance(other, (int, float)):
+            return Matrix([[other * elem for elem in row] for row in self.matrix])
+        else:
+            raise TypeError("Cannot multiply a matrix by a non-matrix or non-vector object.")
+
+    def __len__(self):
+        return len(self.matrix)
+
+    def __eq__(self, other):
+        if isinstance(other, Matrix):
+            return self.matrix == other.matrix
+        else:
+            return False
+
+    def __getitem__(self, index: int) -> List[float]:
+        return self.matrix[index]
+
+    def __copy__(self):
+        return type(self)([[elem for elem in row] for row in self.matrix])
 
     def __str__(self):
-        matrix_str = ''
-        for i in range(min(self.N, 10)):
-            matrix_str += f'{self.A[i][:10]} ... {self.A[i][-10:]}\n'
-        if self.N > 10:
-            matrix_str += '...\n'
-        matrix_str += f'{self.A[-1][:10]} ... {self.A[-1][-10:]}'
-        return matrix_str
+        return '\n'.join([' '.join([str(elem) for elem in row]) for row in self.matrix])
 
-    def __repr__(self):
-        return f'Matrix(a1={self.a1}, a2={self.a2}, a3={self.a3}, index={int(str(self.f) + str(self.e) + str(self.c) + str(self.d))})'
+    def shape(self):
+        return len(self.matrix), len(self.matrix[0])
+
+    def transpose(self):
+        return Matrix([[self.matrix[j][i] for j in range(self.shape()[0])] for i in range(self.shape()[1])])
+
+    def trace(self):
+        if self.shape()[0] != self.shape()[1]:
+            raise ValueError("Matrix must be square to have a trace.")
+        return sum([self.matrix[i][i] for i in range(self.shape()[0])])
+
+    def diagonal(self):
+        if self.shape()[0] != self.shape()[1]:
+            raise ValueError("Matrix must be square to have a diagonal.")
+        return [self.matrix[i][i] for i in range(self.shape()[0])]
+
+    @staticmethod
+    def zeros(x, y):
+        return Matrix([[0 for _ in range(x)] for _ in range(y)])
+
+    @staticmethod
+    def diagonal_to_square_matrix(vector):
+        return Matrix([[vector[i] if i == j else 0 for j in range(len(vector))] for i in range(len(vector))])
 
 
 if __name__ == "__main__":
-    x = 5 + 7
-    y = z = -1
-    m = Matrix(x, y, z)
-    print(m)
+    m1 = Matrix([[1, 2], [3, 4]])
+    m2 = Matrix([[5, 6], [7, 8]])
+    m = Matrix([[1, 2], [3, 4]])
+    v = Vector([1, 2])
+    result = m * v
+    print(result)
+    print(type(result))

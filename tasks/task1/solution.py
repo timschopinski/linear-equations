@@ -1,4 +1,4 @@
-from matrix import Matrix
+from linear_system import Matrix
 
 
 if __name__ == "__main__":
