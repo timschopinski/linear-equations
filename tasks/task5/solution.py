@@ -1,5 +1,4 @@
 from linear_system import LinearSystem
-from lu_factorization import LUFactorization
 from matplotlib import pyplot as plt
 from iterative_methods import Jacobi, GaussSeidel
 from lu_factorization import LUFactorization
@@ -23,14 +22,16 @@ if __name__ == "__main__":
         time_jacobi.append(jacobi_method.elapsed_time)
         time_gauss_seidel.append(gauss_seidel_method.elapsed_time)
         time_lu.append(lu_method.elapsed_time)
-
-    plt.plot(N, time_jacobi, label="Jacobi", color="red")
-    plt.plot(N, time_gauss_seidel, label="Gauss-Seidel", color="blue")
-    plt.plot(N, time_lu, label="LU", color="green")
-    plt.legend()
+    print(time_jacobi)
+    print(time_lu)
+    print(time_gauss_seidel)
+    plt.plot(N, time_jacobi, label="Jacobi", lw=0.4)
+    plt.plot(N, time_gauss_seidel, label="Gauss-Seidel", lw=0.4)
+    plt.plot(N, time_lu, label="LU", lw=0.4)
+    plt.legend(loc='upper left')
     plt.grid(True)
-    plt.ylabel('Time (s)')
-    plt.xlabel('Number of unknowns')
-    plt.title('Time dependence on the number of unknowns')
+    plt.ylabel('czas [s]')
+    plt.xlabel('Liczba niewiadomych')
+    plt.title('Zależność czasu od liczby niewiadomych')
     plt.savefig('chart.png')
     plt.show()

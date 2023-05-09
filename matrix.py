@@ -92,6 +92,7 @@ class Matrix:
     def identity(size):
         return Matrix([[1 if i == j else 0 for j in range(size)] for i in range(size)])
 
+
 if __name__ == "__main__":
     m1 = Matrix([[1, 2], [3, 4]])
     m2 = Matrix([[5, 6], [7, 8]])
